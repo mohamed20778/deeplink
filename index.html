@@ -37,7 +37,7 @@
             return "com.example.movies_app";
         }
         
-        // Auto-trigger on mobile if coming from a deep link
+        // Auto-trigger on mobile
         if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
             window.onload = function() {
                 // Check if we're on the deep link path
@@ -48,6 +48,9 @@
                     } else if (path[0] === 'deeplink') {
                         openApp(); // Open app home
                     }
+                } else {
+                    // If no specific path, just open app home
+                    openApp();
                 }
             };
         }
@@ -58,32 +61,10 @@
             text-align: center;
             padding: 20px;
         }
-        .btn {
-            display: inline-block;
-            margin: 10px;
-            padding: 12px 24px;
-            background: #4285f4;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        .btn.secondary {
-            background: #f1f1f1;
-            color: #333;
-        }
     </style>
 </head>
 <body>
     <h1>Movies App</h1>
-    
-    <div id="manual-buttons">
-        <a href="#" onclick="openApp()" class="btn">Open App Home</a>
-        <a href="#" onclick="openApp(123)" class="btn">Open Movie 123</a>
-    </div>
-    
-    <p>Or use direct links:</p>
-    <div>
-        <a href="movieapptask://open" class="btn secondary">Custom Scheme (Home)</a>
-        <a href="movieapptask://open/movie/123" class="btn secondary">Custom Scheme (Movie 123)</a>
-    </
+    <p>Redirecting to the app...</p>
+</body>
+</html>
