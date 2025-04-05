@@ -6,10 +6,10 @@
     <title>Open Movies App</title>
     <script>
         function openApp(movieId = null) {
-            // 1. Try Android Intent (most reliable)
+            // 1. First try Android Intent (most reliable)
             const intentUrl = movieId 
-                ? `intent://open/movie/${movieId}#Intent;scheme=movieapptask;package=com.example.movies_app;end`
-                : `intent://open#Intent;scheme=movieapptask;package=com.your.package;end`;
+                ? `intent://open/movie/${movieId}#Intent;scheme=movieapptask;package=${getPackageName()};end`
+                : `intent://open#Intent;scheme=movieapptask;package=${getPackageName()};end`;
             
             window.location.href = intentUrl;
             
@@ -21,25 +21,33 @@
                 
                 window.location.href = schemeUrl;
                 
-                // 3. Final fallback to web page
+                // 3. Final fallback to HTTPS deep link
                 setTimeout(function() {
                     const webUrl = movieId
-                        ? `https://yourwebsite.com/movie/${movieId}`
-                        : `https://yourwebsite.com/`;
+                        ? `https://mohamed20778.github.io/deeplink/movie/${movieId}`
+                        : `https://mohamed20778.github.io/deeplink/`;
                     
                     window.location.href = webUrl;
                 }, 1000);
             }, 300);
         }
         
-        // Auto-trigger on mobile
+        function getPackageName() {
+            // Replace with your actual package name from AndroidManifest.xml
+            return "com.example.movies_app";
+        }
+        
+        // Auto-trigger on mobile if coming from a deep link
         if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
             window.onload = function() {
-                const path = window.location.pathname.split('/').filter(Boolean);
-                if (path[0] === 'movie' && path[1]) {
-                    openApp(path[1]); // Open with ID
-                } else {
-                    openApp(); // Open app directly
+                // Check if we're on the deep link path
+                if (window.location.hostname === 'mohamed20778.github.io') {
+                    const path = window.location.pathname.split('/').filter(Boolean);
+                    if (path[0] === 'deeplink' && path[1] === 'movie' && path[2]) {
+                        openApp(path[2]); // Open with movie ID
+                    } else if (path[0] === 'deeplink') {
+                        openApp(); // Open app home
+                    }
                 }
             };
         }
@@ -60,21 +68,22 @@
             border-radius: 5px;
             font-weight: bold;
         }
+        .btn.secondary {
+            background: #f1f1f1;
+            color: #333;
+        }
     </style>
 </head>
 <body>
     <h1>Movies App</h1>
     
     <div id="manual-buttons">
-        <a href="#" onclick="openApp()" class="btn">Open App</a>
+        <a href="#" onclick="openApp()" class="btn">Open App Home</a>
         <a href="#" onclick="openApp(123)" class="btn">Open Movie 123</a>
     </div>
     
     <p>Or use direct links:</p>
-    <a href="intent://open#Intent;scheme=movieapptask;package=com.your.package;end" class="btn">App Home (Intent)</a>
-    <a href="intent://open/movie/123#Intent;scheme=movieapptask;package=com.your.package;end" class="btn">Movie 123 (Intent)</a>
-    
-    <p><small>If nothing happens, the app may not be installed.</small></p>
-</body>
-</html>
-       
+    <div>
+        <a href="movieapptask://open" class="btn secondary">Custom Scheme (Home)</a>
+        <a href="movieapptask://open/movie/123" class="btn secondary">Custom Scheme (Movie 123)</a>
+    </
