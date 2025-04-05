@@ -5,29 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Movies App</title>
     <script>
+        // Check if we should try to open the app
+        function shouldOpenApp() {
+            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        // Try to open the app, fallback to showing page
         function openApp() {
-            // Try to open the app home screen first
+            if (!shouldOpenApp()) return;
+            
+            // Store that we've tried to open the app
+            sessionStorage.setItem('triedAppOpen', 'true');
+            
+            // Try to open the app
             window.location.href = 'movieapptask://open/';
             
-            // Fallback to web home after delay
+            // If still here after 500ms, show the page
             setTimeout(function() {
-                window.location.href = 'https://mohamed20778.github.io/deeplink/';
-            }, 800);
+                if (!document.hidden) {
+                    showPageContent();
+                }
+            }, 500);
         }
-        
-        // Only auto-open if this is a mobile device
-        if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            window.onload = openApp;
+
+        // Show the actual page content
+        function showPageContent() {
+            document.getElementById('redirect-message').style.display = 'none';
+            document.getElementById('page-content').style.display = 'block';
         }
+
+        // On page load
+        window.onload = function() {
+            // Only try to open app if we haven't already tried
+            if (shouldOpenApp() && !sessionStorage.getItem('triedAppOpen')) {
+                document.getElementById('redirect-message').style.display = 'block';
+                document.getElementById('page-content').style.display = 'none';
+                openApp();
+            } else {
+                showPageContent();
+            }
+        };
     </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #redirect-message {
+            margin-top: 50px;
+        }
+        #page-content {
+            display: none;
+        }
+        .link-button {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #4285f4;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Movies App</h1>
-    <p>
-        <a href="movieapptask://open/">Open App Home</a><br>
-        <a href="movieapptask://open/movie/123">Open Movie 123 in App</a><br>
-        <a href="https://mohamed20778.github.io/deeplink/movie/123">Open Movie 123 (Web Fallback)</a><br>
-        <a href="https://mohamed20778.github.io/deeplink/">Web Home</a>
-    </p>
+    <div id="redirect-message">
+        <h2>Opening Movies App...</h2>
+        <p>If you're not automatically redirected, <a href="movieapptask://open/">click here</a></p>
+    </div>
+
+    <div id="page-content">
+        <h1>Welcome to Movies App</h1>
+        <p>Choose an option:</p>
+        
+        <a href="movieapptask://open/" class="link-button">Open App Home</a>
+        <a href="movieapptask://open/movie/123" class="link-button">Open Movie 123 in App</a>
+        <br>
+        <a href="https://mohamed20778.github.io/deeplink/movie/123" class="link-button">Open Movie 123 (Web Fallback)</a>
+        <a href="https://mohamed20778.github.io/deeplink/" class="link-button">Web Home</a>
+        
+        <p>If the app doesn't open, you may need to install it first.</p>
+    </div>
 </body>
 </html>
