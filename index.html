@@ -3,91 +3,78 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Movies App</title>
+    <title>Open Movies App</title>
     <script>
-        // Check if we should try to open the app
-        function shouldOpenApp() {
-            return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-        }
-
-        // Try to open the app, fallback to showing page
-        function openApp() {
-            if (!shouldOpenApp()) return;
+        function openApp(movieId = null) {
+            // 1. Try Android Intent (most reliable)
+            const intentUrl = movieId 
+                ? `intent://open/movie/${movieId}#Intent;scheme=movieapptask;package=com.example.movies_app;end`
+                : `intent://open#Intent;scheme=movieapptask;package=com.your.package;end`;
             
-            // Store that we've tried to open the app
-            sessionStorage.setItem('triedAppOpen', 'true');
+            window.location.href = intentUrl;
             
-            // Try to open the app
-            window.location.href = 'movieapptask://open/';
-            
-            // If still here after 500ms, show the page
+            // 2. Fallback to custom scheme after delay
             setTimeout(function() {
-                if (!document.hidden) {
-                    showPageContent();
+                const schemeUrl = movieId
+                    ? `movieapptask://open/movie/${movieId}`
+                    : `movieapptask://open`;
+                
+                window.location.href = schemeUrl;
+                
+                // 3. Final fallback to web page
+                setTimeout(function() {
+                    const webUrl = movieId
+                        ? `https://yourwebsite.com/movie/${movieId}`
+                        : `https://yourwebsite.com/`;
+                    
+                    window.location.href = webUrl;
+                }, 1000);
+            }, 300);
+        }
+        
+        // Auto-trigger on mobile
+        if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            window.onload = function() {
+                const path = window.location.pathname.split('/').filter(Boolean);
+                if (path[0] === 'movie' && path[1]) {
+                    openApp(path[1]); // Open with ID
+                } else {
+                    openApp(); // Open app directly
                 }
-            }, 500);
+            };
         }
-
-        // Show the actual page content
-        function showPageContent() {
-            document.getElementById('redirect-message').style.display = 'none';
-            document.getElementById('page-content').style.display = 'block';
-        }
-
-        // On page load
-        window.onload = function() {
-            // Only try to open app if we haven't already tried
-            if (shouldOpenApp() && !sessionStorage.getItem('triedAppOpen')) {
-                document.getElementById('redirect-message').style.display = 'block';
-                document.getElementById('page-content').style.display = 'none';
-                openApp();
-            } else {
-                showPageContent();
-            }
-        };
     </script>
     <style>
-        body {
+        body { 
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
             text-align: center;
+            padding: 20px;
         }
-        #redirect-message {
-            margin-top: 50px;
-        }
-        #page-content {
-            display: none;
-        }
-        .link-button {
+        .btn {
             display: inline-block;
             margin: 10px;
-            padding: 10px 20px;
-            background-color: #4285f4;
+            padding: 12px 24px;
+            background: #4285f4;
             color: white;
             text-decoration: none;
             border-radius: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div id="redirect-message">
-        <h2>Opening Movies App...</h2>
-        <p>If you're not automatically redirected, <a href="movieapptask://open/">click here</a></p>
+    <h1>Movies App</h1>
+    
+    <div id="manual-buttons">
+        <a href="#" onclick="openApp()" class="btn">Open App</a>
+        <a href="#" onclick="openApp(123)" class="btn">Open Movie 123</a>
     </div>
-
-    <div id="page-content">
-        <h1>Welcome to Movies App</h1>
-        <p>Choose an option:</p>
-        
-        <a href="movieapptask://open/" class="link-button">Open App Home</a>
-        <a href="movieapptask://open/movie/123" class="link-button">Open Movie 123 in App</a>
-        <br>
-        <a href="https://mohamed20778.github.io/deeplink/movie/123" class="link-button">Open Movie 123 (Web Fallback)</a>
-        <a href="https://mohamed20778.github.io/deeplink/" class="link-button">Web Home</a>
-        
-        <p>If the app doesn't open, you may need to install it first.</p>
-    </div>
+    
+    <p>Or use direct links:</p>
+    <a href="intent://open#Intent;scheme=movieapptask;package=com.your.package;end" class="btn">App Home (Intent)</a>
+    <a href="intent://open/movie/123#Intent;scheme=movieapptask;package=com.your.package;end" class="btn">Movie 123 (Intent)</a>
+    
+    <p><small>If nothing happens, the app may not be installed.</small></p>
 </body>
 </html>
+       
