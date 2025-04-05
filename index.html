@@ -3,12 +3,13 @@
 <head>
     <script>
         function openApp() {
+            const movieId = 123; // Replace with actual movie ID you want to open
             // 1. Try Android Intent (most reliable)
-            window.location.href = "intent://open#Intent;scheme=movieapptask;package=com.your.package;end";
+            window.location.href = `intent://open/movie/${movieId}#Intent;scheme=movieapptask;package=com.your.package;end`;
             
             // 2. Fallback to custom scheme
             setTimeout(function() {
-                window.location.href = "movieapptask://open";
+                window.location.href = `movieapptask://open/movie/${movieId}`;
             }, 300);
         }
         window.onload = openApp;
@@ -16,7 +17,7 @@
 </head>
 <body>
     <h2>Opening App...</h2>
-    <a href="intent://open#Intent;scheme=movieapptask;package=com.example.movies_app;end">
+    <a href="intent://open/movie/123#Intent;scheme=movieapptask;package=com.example.movies_app;end">
         Click here if not redirected
     </a>
 </body>
