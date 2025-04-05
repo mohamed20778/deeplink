@@ -3,21 +3,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Open Movies App</title>
+    <title>Movies App</title>
     <script>
         function openApp() {
-            // First try to open the app without specific movie
+            // Try to open the app home screen first
             window.location.href = 'movieapptask://open/';
             
-            // If that fails, try with a specific movie after delay
-            setTimeout(function() {
-                window.location.href = 'movieapptask://open/movie/123';
-            }, 300);
-            
-            // Final fallback - go to home screen
+            // Fallback to web home after delay
             setTimeout(function() {
                 window.location.href = 'https://mohamed20778.github.io/deeplink/';
-            }, 1000);
+            }, 800);
         }
         
         // Only auto-open if this is a mobile device
@@ -27,10 +22,11 @@
     </script>
 </head>
 <body>
-    <h1>Movies App</h1>
+    <h1>Welcome to Movies App</h1>
     <p>
         <a href="movieapptask://open/">Open App Home</a><br>
-        <a href="movieapptask://open/movie/123">Open Movie 123</a><br>
+        <a href="movieapptask://open/movie/123">Open Movie 123 in App</a><br>
+        <a href="https://mohamed20778.github.io/deeplink/movie/123">Open Movie 123 (Web Fallback)</a><br>
         <a href="https://mohamed20778.github.io/deeplink/">Web Home</a>
     </p>
 </body>
