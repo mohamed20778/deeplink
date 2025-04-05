@@ -1,24 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Open Movies App</title>
     <script>
         function openApp() {
-            const movieId = 123; // Replace with actual movie ID you want to open
-            // 1. Try Android Intent (most reliable)
-            window.location.href = `intent://open/movie/${movieId}#Intent;scheme=movieapptask;package=com.your.package;end`;
+            // First try to open the app without specific movie
+            window.location.href = 'movieapptask://open/';
             
-            // 2. Fallback to custom scheme
+            // If that fails, try with a specific movie after delay
             setTimeout(function() {
-                window.location.href = `movieapptask://open/movie/${movieId}`;
+                window.location.href = 'movieapptask://open/movie/123';
             }, 300);
+            
+            // Final fallback - go to home screen
+            setTimeout(function() {
+                window.location.href = 'https://mohamed20778.github.io/deeplink/';
+            }, 1000);
         }
-        window.onload = openApp;
+        
+        // Only auto-open if this is a mobile device
+        if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            window.onload = openApp;
+        }
     </script>
 </head>
 <body>
-    <h2>Opening App...</h2>
-    <a href="intent://open/movie/123#Intent;scheme=movieapptask;package=com.example.movies_app;end">
-        Click here if not redirected
-    </a>
+    <h1>Movies App</h1>
+    <p>
+        <a href="movieapptask://open/">Open App Home</a><br>
+        <a href="movieapptask://open/movie/123">Open Movie 123</a><br>
+        <a href="https://mohamed20778.github.io/deeplink/">Web Home</a>
+    </p>
 </body>
 </html>
