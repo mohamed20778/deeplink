@@ -37,34 +37,24 @@
             return "com.example.movies_app";
         }
         
-        // Auto-trigger on mobile
+        // Auto-trigger immediately (no waiting for window.onload)
         if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            window.onload = function() {
-                // Check if we're on the deep link path
-                if (window.location.hostname === 'mohamed20778.github.io') {
-                    const path = window.location.pathname.split('/').filter(Boolean);
-                    if (path[0] === 'deeplink' && path[1] === 'movie' && path[2]) {
-                        openApp(path[2]); // Open with movie ID
-                    } else if (path[0] === 'deeplink') {
-                        openApp(); // Open app home
-                    }
-                } else {
-                    // If no specific path, just open app home
-                    openApp();
+            // Check if we're on the deep link path
+            if (window.location.hostname === 'mohamed20778.github.io') {
+                const path = window.location.pathname.split('/').filter(Boolean);
+                if (path[0] === 'deeplink' && path[1] === 'movie' && path[2]) {
+                    openApp(path[2]); // Open with movie ID
+                } else if (path[0] === 'deeplink') {
+                    openApp(); // Open app home
                 }
-            };
+            } else {
+                // If no specific path, just open app home
+                openApp();
+            }
         }
     </script>
-    <style>
-        body { 
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-    </style>
 </head>
 <body>
-    <h1>Movies App</h1>
-    <p>Redirecting to the app...</p>
+    <!-- EMPTY BODY - NO VISIBLE CONTENT -->
 </body>
 </html>
